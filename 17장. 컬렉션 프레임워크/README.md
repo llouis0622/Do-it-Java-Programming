@@ -712,3 +712,256 @@ System.out.println(Arrays.toString(strArray2)); // [가 다 나 null null]
     		System.out.println(mc.data1); // 2 -> 3
     }
     ```
+    
+
+# IV. `Map<K, V>` 컬렉션 인터페이스
+
+## 1. `Map<K, V>` 컬렉션의 특징
+
+### 1. Key와 Value 한 쌍으로 데이터를 저장
+
+- 엔트리(Entry) : Key(키)와 Value(값)의 한 쌍으로 데이터를 저장
+
+### 2. Key는 중복 저장 불가, Value는 중복 가능
+
+- Key값 중복 불가
+- Value값은 Key값으로 구분 → 중복 허용
+
+## 2. `Map<K, V>` 인터페이스의 주요 메서드
+
+- `HashMap<K, V>` , `LinkedHashMap<K, V>` , `Hashtable<K, V>` , `TreeMap<K, V>`
+- `put()` : 데이터 추가
+- `putAll()` : 데이터 객체 전부 추가
+- `replace()` : 해당 엔트리가 없을 때는 매개변수에 따라 null 또는 false 리턴
+- `get()` : 데이터의 값 꺼내기
+- `containKey()` : Key 객체가 `Map<K, V>` 내에 존재하는지 불리언으로 리턴
+- `containValue()` : Value 객체가 `Map<K, V>` 내에 존재하는지 불리언으로 리턴
+- `KeySet()` : `Map<K, V>` 데이터 쌍들 중에서 Key만을 뽑아 `Set<E>` 로 리턴
+- `entrySet()` : 내부 원소로 `Entry<K, V> 타입을 같는 `Set<E>` 객체
+- `size()` : 전체 엔트리 개수
+- `remove()` : 데이터 삭제
+- `clear()` : `Map<K, V>` 객체의 전체 엔트리 삭제
+
+## 3. `HashMap<K, V>`
+
+- Key 값의 중복을 허용하지 않음
+- Key 값의 중복 여부를 확인하는 메커니즘은 `HashSet<E>` 와 완벽히 동일
+- 입출력 순서는 동일하지 않을 수도 있음
+
+### 1. `HashMap<K, V>` 주요 메서드
+
+```java
+Map<Integer, String> hMap1 = new HashMap<Integer, String>();
+
+// 1. put(K key, V value)
+hMap1.put(2, "나다라");
+hMap1.put(1, "가나다");
+hMap1.put(3, "다라마");
+System.out.println(hMap1.toString()); // {1=가나다, 2=나다라, 3=다라마}
+
+// 2. putAll(Map<? extends K, ? extends V> m)
+Map<Integer, String> hMap2 = new HashMap<Integer, String>();
+hMap2.putAll(hMap1);
+System.out.println(hMap2.toString()); // {1=가나다, 2=나다라, 3=다라마}
+```
+
+```java
+// 3. replace(K key, V value)
+hMap2.replace(1, "가가가");
+hMap2.replace(4, "라라라"); // 미동작
+System.out.println(hMap2.toString()); // {1=가가가, 2=나다라, 3=다라마}
+
+// 4. replace(K key, V oldValue, V newValue)
+hMap2.replace(1, "가가가", "나나나");
+hMap2.replace(2, "다다다", "라라라"); // 미동작
+System.out.println(hMap2.toString()); // {1=나나나, 2=나다라, 3=다라마}
+```
+
+```java
+// 5. V get(Object key)
+System.out.println(hMap2.get(1)); // 나나나
+System.out.println(hMap2.get(2)); // 나다라
+System.out.println(hMap2.get(3)); // 다라마
+
+// 6. containsKey(Object key)
+System.out.println(hMap2.containsKey(1)); // true
+System.out.println(hMap2.containsKey(5)); // false
+
+// 7. containsValue(Object value)
+System.out.println(hMap2.containsValue("나나나")); // true
+System.out.println(hMap2.containsValue("다다다")); // false
+
+// 8. Set<K> keySet()
+Set<Integer> ketSet = hMap2.keySet();
+System.out.println(keySet.toString()); // [1, 2, 3]
+
+// 9. Set<Map.Entry<K, V>> entrySet()
+Set<Map.Entry<Integer, String>> entrySet = hMap2.entrySet();
+System.out.println(entrySet); // [1=나나나, 2=나다라, 3=다라마]
+
+// 10. size()
+System.out.println(hMap2.size()); // 3
+```
+
+## 4. `Hashtable<K, V>`
+
+- Hashtable은 멀티쓰레드에 안정성을 가짐
+
+### 1. `Hashtable<K, V>` 의 주요 메서드
+
+- `HashMap<K, V>` 와 동일한 특징
+- 동일한 Key 값의 중복을 허용하지 않으며, 입출력의 순서는 일치하지 않을 수 있음
+
+## 5. `LinkedHashMap<K, V>`
+
+- `HashMap<K, V>` 의 기본적인 특성에 입력 데이터의 순서 정보를 추가로 갖고 있는 컬렉션
+- 항상 입력된 순서대로 출력
+
+### 1. `LinkedHashMap<K, V>` 의 주요 메서드
+
+- 출력이 입력 순으로 나오는 것을 제외 → `HashMap<K, V>` 와 완벽히 동일
+
+## 6. `TreeMap<K, V>`
+
+- `Map<K, V>` 의 기본 기능에 정렬 및 검색 기능 추가 → 입력 순서와 관계없이 데이터를 Key 값의 크기 순으로 저장
+- `SortedMap<K, V>` 와 `NavigableMap<K, V>` 인터페이스의 자식 클래스 → 정렬과 검색 기능 추가 정의
+    
+    ```java
+    Map<Integer, String> treeMap = new TreeMap<Integer, String>();
+    treeMap.loremIpsum // Map<K, V> 메서드만 사용 가능
+    ```
+    
+    ```java
+    TreeMap<Integer, String> treeMap = new TreeMap<Integer, String>();
+    treeMap.loremIpsum // Map<K, V> 메서드와 추가된 정렬/검색 메서드 사용 가능
+    ```
+    
+
+### 1. `TreeMap<K, V>` 의 주요 메서드
+
+- `firstKey()` : 첫 번째 검색 데이터의 Key 값
+- `firstEntry()` : 첫 번째 검색 데이터의 엔트리 값
+- `lastKey()` : 마지막 번째 검색 데이터의 Key 값
+- `lastEntry()` : 마지막 번째 검색 데이터의 엔트리 값
+- `lowerKey()` : 입력된 매개변수보다 작은 가장 인접한 Key 값
+- `lowerEntry()` : 입력된 매개변수보다 작은 가장 인접한 엔트리 값
+- `higherKey()` : 입력된 매개변수보다 큰 가장 인접한 Key 값
+- `higherEntry()` : 입력된 매개변수보다 큰 가장 인접한 엔트리 값
+- `pollFirstEntry()` : 가장 작은 Key 값의 엔트리(데이터의 개수 줄어듦)
+- `pollLastEntry()` : 가장 큰 Key 값의 엔트리(데이터의 개수 줄어듦)
+- 매개변수에 불리언 미포함 → `SortedMap<K, V>` 리턴
+- 매개변수에 불리언 포함 → `NavigableMap<K, V>` 리턴
+- `descendingKeySet()` : `Map<K, V>` 에 포함된 모든 Key 값의 정렬 순서를 반대로 변환한 `NavigableSet<E>` 객체 리턴
+- `descendingMap()` : `TreeMap<K, V>` 에 포함된 모든 Key 값의 정렬을 반대로 변환한 `NavigableMap<K, V>` 객체 리턴
+
+### 2. `TreeMap<K, V>` 의 주요 메서드 사용하기
+
+```java
+TreeMap<Integer, String> treeMap = new TreeMap<Integer, String>();
+for(int i = 20; i > 0; i -= 2;
+		treeMap.put(i, i + "번째 데이터");
+	System.out.println(treeMap.toString()); // {2=2번째 데이터, 4=4번째 데이터, ..., 20=20번째 데이터}
+```
+
+```java
+// 1. firstKey()
+System.out.println(treeMap.firstKey()); // 2
+
+// 2. firstEntry()
+System.out.println(treeMap.firstEntry()); // 2=2번째 데이터
+
+// 3. lastKey()
+System.out.println(treeMap.lastKey()); // 20
+
+// 4. lastEntry()
+System.out.println(treeMap.lastEntry()); // 20=20번째 데이터
+
+// 5. lowerKey(K key)
+System.out.println(treeMap.lowerKey(11)); // 10
+System.out.println(treeMap.lowerKey(10)); // 8
+
+// 6. higherKey(K key)
+System.out.println(treeMap.higherKey(11)); // 12
+System.out.println(treeMap.higherKey(10)); // 12
+```
+
+```java
+// 7. pollFirstEntry()
+System.out.println(treeMap.pollFirstEntry()); // 2=2번째 데이터
+System.out.println(treeMap.toString); // {4=4번째 데이터, 6=6번째 데이터, ..., 20=20번째 데이터}
+
+// 8. pollLstEntry()
+System.out.println(treeMap.pollLastEntry()); // 20=20번째 데이터
+System.out.println(treeMap.toString()); // {2=2번째 데이터, 4=4번째 데이터, ..., 18=18번째 데이터}
+```
+
+```java
+// SortedMap<K, V> headMap(K toKey)
+SortedMap<Integer, String> sortedMap = treeMap.headMap(8);
+System.out.println(sortedMap); // {4=4번째 데이터, 6=6번째 데이터}
+
+// 10. NavigableMap<K, V> headMap(K toKey, boolean inclusive)
+NavigableMap<Integer, String> navigableMap = treeMap.headMap(8, true);
+System.out.println(navigableMap); // {4=4번쨰 데이터, 6=6번째 데이터, 8=8번째 데이터)
+
+// 11. SortedMap<K, V> tailMap(K toKey)
+sortedMap = treeMap.tailMap(14);
+System.out.println(sortedMap); // {14=14번째 데이터, 16=16번째 데이터, 18=18번째 데이터}
+
+// 12. NavigableMap<K, V> tailMap(K toKey, boolean inclusive)
+navigableMap = treeMap.headMap(14, false);
+System.out.println(navigableMap); // {16=16번째 데이터, 18=18번째 데이터)
+
+// 13. SortedMap<K, V> subMap(K fromKey, K toKey)
+sortedMap = treeMap.subMap(6, 10);
+System.out.println(sortedMap); // {6=6번째 데이터, 8=8번째 데이터}
+
+// 14. NavigableMap<K, V> subMap(K fromKey, boolean frominclusive, K toKey, boolean toinclusive)
+navigableMap = treeMap.subMap(6, false, 10, true);
+System.out.println(navigableMap); // {8=8번째 데이터, 10=10번째 데이터)
+```
+
+```java
+// 15. NavigableSet<K, V> descendingKeySet()
+NavigableSet<Integer> navigableSet = treeMap.descendingKeySet();
+System.out.println(navigableSet); // [18, 16, 14, ..., 4]
+System.out.println(navigableSet.descendingSet()); // [4, 6, 8, ..., 18]
+
+// 16. NavigableMap<K, V> descendingMap()
+navigableMap = treeMap.descendingMap();
+System.out.println(navigableMap); // {18=18번째 데이터, 16=16번째 데이터, ..., 4=4번째 데이터}
+System.out.println(navigableMap.descendingMap()); // {4=4번째 데이터, 6=6번째 데이터, ..., 18=18번째 데이터}
+```
+
+# V. `Stack<E>` 컬렉션 클래스
+
+## 1. `Stack<E>` 컬렉션의 특징
+
+- 유일하게 클래스
+- 후입선출(LIFO : Last In First Out) : 나중에 입력된 데이터가 먼저 출력
+- 변수를 `Stack<E>` 타입으로 선언
+
+## 2. `Stack<E>` 의 주요 메서드
+
+- `push()` : 데이터를 `Stack<E>` 에 추가
+- `pop()` : 위에서부터 데이터를 꺼냄
+- `peek()` : 가장 위의 데이터 읽기
+- `search()` : 현재 데이터의 위칫값 리턴(맨 위의 값이 1, 아래로 갈수록 1씩 증가, 해당 데이터가 없을 때 -1 리턴)
+- `empty()` : 객체의 데이터가 비어 있는지 확인
+
+# VI. `Queue<E>` 컬렉션 인터페이스
+
+## 1. `Queue<E>` 컬렉션의 특징
+
+- 선입선출(FIFO : First In First Out) : 먼저 저장된 데이터가 먼저 출력
+
+## 2. `Queue<E>` 의 주요 메서드
+
+- 데이터가 없을 때 예외를 발생 → 예외 처리 기능 미포함 메서드
+    - `add()` : 데이터 추가
+    - `element()` : 가장 상위에 있는 원솟값 리턴
+    - `remove()` : 데이터 삭제
+- 기본값으로 대체 → 예외 처리 기능 포함 메서드
+    - `offer()` : 데이터 추가
+    - `peek()` : 가장 상위의 원솟값 리턴
+    - `poll()` : 데이터 삭제
